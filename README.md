@@ -1,73 +1,126 @@
-# QBittorrent-NordVPN-Docker Setup
+### **Versión mejorada del archivo README:**
 
-# Source Image Documentation
-- [NordLynx](https://github.com/bubuntux/nordlynx)
-    see the source image documentation for more information on the NordLynx image and running multiple containers with the same network
-- [qBittorrent](https://github.com/linuxserver/docker-qbittorrent)
+```markdown
+# QBittorrent-NordVPN Docker Setup
 
-This repository contains Docker Compose files to set up and run qBittorrent through NordVPN using Docker.
+This project provides a Docker Compose setup to run **qBittorrent** through **NordVPN** using the NordLynx technology. This ensures all torrent traffic is routed securely and anonymously through NordVPN.
+
+## Table of Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+  - [1. Clone the repository](#1-clone-the-repository)
+  - [2. Configure the environment](#2-configure-the-environment)
+  - [3. Run the containers](#3-run-the-containers)
+- [Accessing qBittorrent](#accessing-qbittorrent)
+- [Ports](#ports)
+- [Managing the Services](#managing-the-services)
+  - [Start the services](#start-the-services)
+  - [Stop the services](#stop-the-services)
+  - [Restart the services](#restart-the-services)
 
 ## Overview
 
-The setup includes two main services:
-1. **NordVPN**: A container running the NordVPN client, configured to connect to a server in Switzerland using the NordLynx technology.
-2. **qBittorrent**: A torrent client container configured to route its traffic through the NordVPN container.
+This setup includes two primary services:
+1. **NordVPN**: A container that runs NordVPN with the NordLynx protocol for secure, anonymous internet connections. The VPN traffic is routed through servers in Switzerland by default.
+2. **qBittorrent**: A torrent client container whose traffic is routed through the NordVPN container to ensure anonymity.
+
+This Docker Compose configuration ensures that your torrenting activity is secure by routing all traffic through NordVPN, preventing any accidental IP leaks.
 
 ## Prerequisites
 
+Before you begin, ensure you have the following:
 - Docker and Docker Compose installed on your system.
-- A NordVPN subscription and a generated token for authentication.
+- A **NordVPN** subscription.
+- Your **NordVPN private key** (needed for NordLynx authentication).
 
-## Configuration
+## Setup Instructions
 
-Before starting, you need to create an `.env` file in the root of this project with your NordVPN token:
+### 1. Clone the repository
 
-```env
-NORDVPN_TOKEN=<Your_NordVPN_Token_Here>
-QBIT_CONFIG_FOLDERPATH="C:/your/path/to/config/folder"
-QBIT_DOWNLOAD_FOLDERPATH="C:/your/path/to/downloads/folder"
+Start by cloning this repository to your local machine:
+
+```bash
+git clone https://github.com/bcalderom/QBittorrent-NordVPN-Docker.git
+cd QBittorrent-NordVPN-Docker
 ```
 
-**Note 1**: The `.env` file is excluded from this repository for security reasons.
-**Note 2**: The `NORDVPN_TOKEN` parameter is a string generated through another process. Check [How to get your private key](https://github.com/bubuntux/nordlynx/pkgs/container/nordlynx#how-to-get-your-private_key) for more information.
+### 2. Configure the environment
 
-## Usage
+You will need to create an `.env` file to store your NordVPN credentials and folder paths for qBittorrent configuration and downloads.
 
-To start the services, run the following command from the directory containing your docker compose file:
+1. Copy the provided `env.template` and rename it to `.env`:
+   
+   ```bash
+   cp env.template .env
+   ```
+
+2. Edit the `.env` file and replace the placeholder values with your own:
+
+   ```env
+   PRIVATE_KEY="<Your_NordVPN_Private_Key_Here>"
+   QBIT_CONFIG_FOLDER="/absolute/path/to/config/folder"
+   QBIT_DOWNLOAD_FOLDER="/absolute/path/to/downloads/folder"
+   ```
+
+   - **PRIVATE_KEY**: Your NordVPN private key. Follow [this guide](https://github.com/bubuntux/nordlynx/pkgs/container/nordlynx#how-to-get-your-private_key) to generate your private key.
+   - **QBIT_CONFIG_FOLDER**: The directory on your host system where qBittorrent configuration files will be stored.
+   - **QBIT_DOWNLOAD_FOLDER**: The directory on your host system where torrent downloads will be saved.
+
+### 3. Run the containers
+
+Once your `.env` file is configured, start the containers:
 
 ```bash
 docker-compose up -d
 ```
 
-```cmd
-docker compose -f 'docker-compose-file.yml' up -d
-```
-
-This command will start the NordVPN and qBittorrent containers in detached mode.
+This will start both **NordVPN** and **qBittorrent** containers in the background (detached mode).
 
 ## Accessing qBittorrent
 
-The qBittorrent web interface will be available at `http://localhost:8080`. The default credentials are `admin` for the username and the terminal will indicate a temporary password for the password. It is highly recommended to change these upon first login.
+After the containers are running, you can access the **qBittorrent** web interface by navigating to:
+
+```
+http://localhost:8080
+```
+
+- **Default credentials**: 
+  - **Username**: `admin`
+  - **Password**: A temporary password will be displayed in the Docker logs on the first run. You can check it with the following command:
+    ```bash
+    docker logs qbittorrent
+    ```
+  - **Important**: It's highly recommended to change the default password upon the first login.
 
 ## Ports
 
-The following ports are exposed:
+The following ports are exposed and can be customized if needed:
+- **8080**: For accessing the **qBittorrent WebUI**.
+- **6881**: For **torrenting traffic** (TCP/UDP).
 
-- `8080` for the qBittorrent web interface.
-- `6881` for torrenting (TCP/UDP).
+## Managing the Services
 
-## Stopping the Services
+### Start the services
 
-To stop and remove the containers, you can use the following command:
+To start the services manually:
+
+```bash
+docker-compose up -d
+```
+
+### Stop the services
+
+To stop and remove the containers:
 
 ```bash
 docker-compose down
 ```
 
-## Support and Contributions
+### Restart the services
 
-For issues, suggestions, or contributions, please open an issue or pull request in this repository.
+To restart the containers and apply configuration changes:
 
-## Disclaimer
-
-This setup is provided as-is without any guarantees. Make sure to comply with the NordVPN Terms of Service and respect copyright laws when using qBittorrent.
+```bash
+docker-compose down && docker-compose up -d
+```
