@@ -28,7 +28,8 @@ QBIT_CONFIG_FOLDERPATH="C:/your/path/to/config/folder"
 QBIT_DOWNLOAD_FOLDERPATH="C:/your/path/to/downloads/folder"
 ```
 
-**Note**: The `.env` file is excluded from this repository for security reasons.
+**Note 1**: The `.env` file is excluded from this repository for security reasons.
+**Note 2**: The `NORDVPN_TOKEN` parameter is a string generated through another process. Check [How to get your private key](https://github.com/bubuntux/nordlynx/pkgs/container/nordlynx#how-to-get-your-private_key) for more information.
 
 ## Usage
 
