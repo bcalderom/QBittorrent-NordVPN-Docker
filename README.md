@@ -1,6 +1,3 @@
-### **Versión mejorada del archivo README:**
-
-```markdown
 # QBittorrent-NordVPN Docker Setup
 
 This project provides a Docker Compose setup to run **qBittorrent** through **NordVPN** using the NordLynx technology. This ensures all torrent traffic is routed securely and anonymously through NordVPN.
